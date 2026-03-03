@@ -114,10 +114,10 @@ def display_explanation(input_df, session, aws_bucket):
     explainer = load_shap_explainer(session, aws_bucket, posixpath.join('explainer', explainer_name),os.path.join(tempfile.gettempdir(), explainer_name))
     best_pipeline = load_pipeline(session, aws_bucket, 'sklearn-pipeline-deployment')
     preprocessing_pipeline = Pipeline(steps=best_pipeline.steps[:-2])   
-    input_df__transformed = preprocessing_pipeline.transform(input_df)
+    input_df_transformed = preprocessing_pipeline.transform(input_df)
     feature_names = best_pipeline[1:4].get_feature_names_out()
-    input_df__transformed = pd.DataFrame(X_test_transformed, columns=feature_names)
-    shap_values = explainer(input_df__transformed)
+    input_df_transformed = pd.DataFrame(input_df_transformed, columns=feature_names)
+    shap_values = explainer(input_df_transformed)
     
     #shap_values = explainer(input_df_transformed)
     st.subheader("🔍 Decision Transparency (SHAP)")
@@ -125,7 +125,7 @@ def display_explanation(input_df, session, aws_bucket):
     shap.plots.waterfall(shap_values[0,:,0], max_display=10)
     st.pyplot(fig)
     # top feature   
-    top_feature = shap_values[0,:,0].feature_names[0]
+    top_feature = pd.Series(shap_values[0,:2].values, index=shap_values[0, : 2].feature_names).abs().idxmax()
     st.info(f"**Business Insight:** The most influential factor in this decision was **{top_feature}**.")
 
 # Streamlit UI
@@ -159,6 +159,7 @@ if submitted:
         display_explanation(input_df,session, aws_bucket)
     else:
         st.error(res)
+
 
 
 
