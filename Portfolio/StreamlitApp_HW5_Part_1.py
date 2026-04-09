@@ -60,7 +60,7 @@ MODEL_INFO = {
         "endpoint": aws_endpoint,
         "explainer": 'explainer_pca.shap',
         "pipeline": 'finalized_pca_model.tar.gz',
-        "keys": ["IBM"],
+        "keys": ["ROK", "AMZN"],
         "inputs": [{"name": k, "type": "number", "min": 0.0, "default": 100.0, "step": 10.0} for k in ["GOOGL", "IBM", "DEXJPUS", "DEXUSUK", "SP500", "DJIA", "VIXCLS"]]
 }
 
